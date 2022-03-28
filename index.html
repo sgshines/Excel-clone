@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+</head>
+<body>
+    <div class="action-bar">
+        <div class="action-buttons">Home</div>
+        <div class="action-buttons">File</div>
+        <div class="action-buttons">Insert</div>
+        <div class="action-buttons">Layout</div>
+        <div class="action-buttons">Help</div>
+    </div>
+    <div class="cell-property-bar">
+        <span class="material-icons">
+            content_copy
+        </span>
+        <span class="material-icons">
+            content_cut
+        </span>
+        <span class="material-icons">
+            content_paste
+        </span>
+        <select class="font-family-prop">
+            <option value="Monospace">Monospace</option>
+            <option value="Serif">Serif</option>
+            <option value="Sans-serif">Sans-serif</option>
+            <option value="Fantasy">Fantasy</option>
+            <option value="Cursive">Cursive</option>
+        </select>
+        <select name="" id="" class="font-size-prop">
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="14">14</option>
+            <option value="16">16</option>
+            <option value="18">18</option>
+            <option value="20">20</option>
+        </select>
+        <span class="material-icons bold">
+            format_bold
+        </span>
+        <span class="material-icons italic">
+            format_italic
+        </span>
+        <span class="material-icons underline">
+            format_underlined
+        </span>
+        <span class="left material-icons alignment">
+            format_align_left
+        </span>
+        <span class="center material-icons alignment">
+            format_align_center
+        </span>
+        <span class="right material-icons alignment">
+            format_align_right
+        </span>
+        <div class="color-prop">
+            <span class="material-icons">
+                format_color_text
+            </span>
+            <input type="color" name="" id="" class="font-color-prop">
+        </div>
+        <div class="color-prop">
+            <span class="material-icons">
+                format_color_fill
+            </span>
+            <input type="color" name="" id="" class="Bg-color-prop">
+        </div>
+    </div>
+    <div class="formula-bar-cont">
+        <input type="text" readonly name="" id="" class="address-bar">
+        <img class="formula-icon" src="https://img.icons8.com/ios/50/000000/formula-fx.png"/>
+        <input type="text" name="" id="" class="formula-bar">
+    </div>
+    <div class="grid-sheet">
+        <div class="top-left-dummy-box"></div>
+        <div class="address-col-cont"></div>
+        <div class="cells-cont">
+            <div class="address-row-cont"></div>
+        </div>
+    </div>
+    <div class="sheet-actions-bar">
+        <div class="sheet-folder-add">
+            <span class="material-icons">
+                post_add
+            </span>
+        </div>
+        <div class="sheet-folder-cont">
+            <div class="sheet-folder">Sheet1</div>
+        </div>
+    </div>
+
+    <script src="/grid.js"></script>
+    <script src = "/cell-prop.js"></script>
+    <script src="/formula.js"></script>
+</body>
+</html>
