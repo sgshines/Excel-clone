@@ -8,12 +8,19 @@
 
 for(let i = 0; i < row; i++){
     for(let j = 0; j < col; j++){
-        let cell =
+        let cell = document.querySelector(`.cell[rid="${i}"][cid="${j}"]`);
         cellsCont.addEventListener("blur", (e) =>{
-            let address = address.value;
-            let[activecell, cellProp] = activecell(address);
+            let address = addressBar.value;
+            let[activecell, cellProp] = getCellAndCellProp(address);
             let enteredData = activecell.innerText;
+
+            if(enteredData === cellProp.value) return;
+
             cellProp.value = enteredData;
+            //if data modifies remove P-c relation, formula empty and update children with new value
+            removeChildFromParent(cellProp.formula);
+            cellProp.formula = "";
+            updateChildrenCells(address);
         });
     }
 }
@@ -22,9 +29,16 @@ let formulaBar = document.querySelector(".formula-bar");
 formulaBar.addEventListener("keydown", (e) =>{
     let inputFormula = formulaBar.value;
     if(e.key == "Enter" && formulaBar.value){
+        //if change in formula bar then remove P-c relation, formula empty and update children with new value
+        let address = addressBar.value;
+        console.log(address);
+        let [cell, cellProp] = getCellAndCellProp(address);
+        console.log(cellProp);
+        if(inputFormula !== cellProp.formula); removeChildFromParent(cellProp.formula);
         let evaluatedValue = evaluateFormula(inputFormula);
         //for updating the cell UI and cellprop in db
-        setCellUIAndCellProp(evaluatedValue,inputFormula);
+        setCellUIAndCellProp(evaluatedValue,inputFormula, address);
+        addChildToParent(inputFormula);
     }
 })
 
@@ -33,20 +47,57 @@ function evaluateFormula(formula){
     for(let i = 0; i < encodedFormula.length; i++){
         let asciiValue = encodedFormula[i].charCodeAt(0);
         if(asciiValue >= 65 && asciiValue <= 90){
-            let [cell, cellProp] = activecell(encodedFormula[i]);
+            let [cell, cellProp] = getCellAndCellProp(encodedFormula[i]);
             encodedFormula[i] = cellProp.value;
         }
     }
     //eval function is used to evaluate the formula in js
-    return eval(encodedFormula.join(" "));
+    let decodedformula = encodedFormula.join(" ");
+    return eval(decodedformula);
 }
 
-function setCellUIAndCellProp(value,formula){
-    let address = addressBar.value;
-    let[cell, cellProp] = activecell(address);
+function setCellUIAndCellProp(value,formula,address){
+    let[cell, cellProp] = getCellAndCellProp(address);
     //updating the cell UI
     cell.innerText = value;
     //db update
     cellProp.value = value;
     cellProp.formula = formula;
+}
+
+function addChildToParent(formula){
+    let childAddress = addressBar.value;
+    let encodedFormula = formula.split(" ");
+    for(let i = 0; i < encodedFormula.length; i++){
+        let asciiValue = encodedFormula[i].charCodeAt(0);
+        if(asciiValue >= 65 && asciiValue <= 90){
+            let [parentCell, parentCellProp] = getCellAndCellProp(encodedFormula[i]);
+            parentCellProp.children.push(childAddress);
+        }
+    }
+}
+
+function removeChildFromParent(formula){
+    let childAddress = addressBar.value;
+    let encodedFormula = formula.split(" ");
+    for(let i = 0; i < encodedFormula.length; i++){
+        let asciiValue = encodedFormula[i].charCodeAt(0);
+        if(asciiValue >= 65 && asciiValue <= 90){
+            let [parentCell, parentCellProp] = getCellAndCellProp(encodedFormula[i]);
+            parentCellProp.children.splice(parentCellProp.children.indexOf(childAddress),1);
+        }
+    }
+}
+
+function updateChildrenCells(parentAddress){
+    let [parentCell, parentCellProp] = getCellAndCellProp(parentAddress);
+    let children = parentCellProp.children;
+    for(let i = 0; i < children.length; i++){
+        let childAddress = children[i];
+        let [childrenCell, childCellProp] = getCellAndCellProp(childAddress);
+        let childFormula = childCellProp.formula;
+        let evaluatedValue = evaluateFormula(childFormula);
+        setCellUIAndCellProp(evaluatedValue,childFormula, childAddress);
+        updateChildrenCells(childrenAddress);
+    }
 }

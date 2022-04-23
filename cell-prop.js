@@ -4,7 +4,7 @@ for(let i = 0; i < row; i++){
     let sheetRow = [];
     for(let j = 0; j < col; j++){
         //object to store the properties of cell
-        let cellprop = {
+        let cellProp = {
             bold: false,
             italic: false,
             underline: false,
@@ -14,9 +14,10 @@ for(let i = 0; i < row; i++){
             fontColor: "#000000",
             Bgcolor: "#000000",
             value: "",
-            formula: ""
+            formula: "",
+            children: []
         }
-        sheetRow.push(cellprop);
+        sheetRow.push(cellProp);
     }
     sheetDB.push(sheetRow);
 }
@@ -130,6 +131,9 @@ alignment.forEach((alignElem) => {
                 rightAlign.style.backgroundColor = activeColorProp;
                 break;
         }
+        let formularBar = document.querySelector(".formular-bar");
+        formularBar.value = cellProp.formula;
+        cell.value = cellProp.value;
         
     })
 })
@@ -181,19 +185,19 @@ function addListenerToAttachCellProperties(cell){
         }
     })
 }
-
-function activecell(address){
-    let [rid, cid] = decoder_rid_cid(address); // accessing the rid and cid using destructuring of array
-    //acess cell and storage object
-    let cell = document.querySelector(`.cell[rid="${rid}"][cid="${cid}"]`);
-    let cellProp = sheetDB[rid][cid];
-    return [cell, cellProp];
-}
-
 function decoder_rid_cid(address){
-    let rid = Number(address.slice(1)-1);   // "1" -> 0 since we have taken the row in grid as i+1
+    console.log(address);
+    let rid = Number(address.slice(1))-1;   // "1" -> 0 since we have taken the row in grid as i+1
     let cid = Number(address.charCodeAt(0)) - 65; // taking a as 0 
     return [rid, cid];
 }
 
+function getCellAndCellProp(address){
+    let [rid, cid] = decoder_rid_cid(address); // accessing the rid and cid using destructuring of array
+    //acess cell and storage object
+    console.log(rid,cid);
+    let cell = document.querySelector(`.cell[rid="${rid}"][cid="${cid}"]`);
+    let cellProp = sheetDB[rid][cid];
+    return [cell, cellProp];
+}
 
